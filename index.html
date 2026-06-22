@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Happy Birthday! 🌌✨</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background: #06020b;
+            color: #f1e4ff;
+            font-family: '-apple-system', BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            min-height: 100vh;
+            width: 100vw;
+            overflow-x: hidden;
+            overflow-y: auto;
+        }
+
+        .sky-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: radial-gradient(circle at 50% 20%, #1a0933 0%, #06020b 70%);
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        /* PAGE SYSTEM */
+        .app-page {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            min-height: 100vh;
+            transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1), transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .app-page.hidden {
+            opacity: 0;
+            pointer-events: none;
+            transform: translateY(-30px);
+        }
+
+        .universe-scroll-wrapper {
+            position: relative;
+            width: 100%;
+            max-width: 450px;
+            padding: 40px 20px;
+            z-index: 5;
+            display: flex;
+            flex-direction: column;
+            gap: 75px;
+        }
+
+        /* HERO SECTION */
+        .hero-section {
+            height: 85vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            position: relative;
+        }
+
+        .floating-crown {
+            font-size: 65px;
+            margin-bottom: 20px;
+            animation: bounceCrown 3s ease-in-out infinite alternate;
+            filter: drop-shadow(0 0 15px rgba(255, 71, 126, 0.6));
+        }
+
+        @keyframes bounceCrown {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(-15px); }
+        }
+
+        .neon-title {
+            font-size: 32px;
+            font-weight: 900;
+            line-height: 1.2;
+            margin-bottom: 15px;
+            background: linear-gradient(45deg, #ff477e, #ff85a2, #b5179e, #7209b7);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 25px rgba(255, 71, 126, 0.3);
+        }
+
+        .nickname-badge {
+            background: rgba(255, 71, 126, 0.1);
+            border: 1px solid rgba(255, 71, 126, 0.3);
+            padding: 6px 16px;
+            border-radius: 50px;
+            font-size: 13px;
+            font-weight: 600;
+            color: #ff85a2;
+            margin-bottom: 25px;
+            letter-spacing: 0.5px;
+        }
+
+        .scroll-down-indicator {
+            position: absolute;
+            bottom: 20px;
+            font-size: 13px;
+            color: rgba(220, 191, 255, 0.4);
+            animation: pulseScroll 1.5s infinite;
+        }
+
+        @keyframes pulseScroll {
+            0%, 100% { transform: translateY(0); opacity: 0.3; }
+            50% { transform: translateY(8px); opacity: 1; }
+        }
+
+        /* MEMORY FRAMES */
+        .memory-timeline {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+            width: 100%;
+        }
+
+        .polaroid-card {
+            background: #ffffff;
+            color: #11091c;
+            padding: 15px 15px 22px 15px;
+            border-radius: 12px;
+            box-shadow: 0 12px 25px rgba(0,0,0,0.4);
+            transform: rotate(var(--rotation));
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            cursor: pointer;
+        }
+
+        .polaroid-card:active {
+            transform: scale(0.97) rotate(0deg) !important;
+        }
+
+        .photo-placeholder {
+            width: 100%;
+            height: 170px;
+            background: linear-gradient(135deg, #1a0933, #3f175e);
+            border-radius: 6px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 34px;
+            margin-bottom: 12px;
+        }
+
+        .card-caption {
+            font-family: 'Courier New', Courier, monospace;
+            font-weight: 800;
+            font-size: 14px;
+            text-align: center;
+            color: #2b113a;
+        }
+
+        /* FINAL LETTER BOX */
+        .letter-vault {
+            background: linear-gradient(to bottom, rgba(38, 16, 61, 0.65), rgba(15, 6, 26, 0.85));
+            border: 2px solid rgba(181, 23, 158, 0.35);
+            border-radius: 24px;
+            padding: 35px 22px;
+            text-align: center;
+            box-shadow: 0 0 30px rgba(181, 23, 158, 0.15);
+        }
+
+        .letter-vault p {
+            font-size: 15px;
+            line-height: 1.7;
+            color: #f1e4ff;
+            margin-bottom: 18px;
+        }
+
+        /* TELEPORT BUTTON */
+        .teleport-btn {
+            background: linear-gradient(45deg, #ff477e, #b5179e);
+            color: white;
+            border: none;
+            padding: 16px 30px;
+            font-size: 16px;
+            font-weight: 700;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 0 25px rgba(255, 71, 126, 0.5);
+            transition: transform 0.2s;
+            margin-top: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .teleport-btn:active {
+            transform: scale(0.95);
+        }
+
+        /* PAGE 2: HIGH-END CAKE REALM */
+        .cake-realm {
+            width: 100%;
+            max-width: 450px;
+            padding: 40px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            text-align: center;
+            z-index: 10;
+        }
+
+        /* 3D STEP-BY-STEP CAKE GROWTH */
+        .huge-cake-container {
+            position: relative;
+            width: 320px;
+            height: 320px;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            align-items: center;
+            margin: 40px 0;
+            perspective: 1000px;
+        }
+
+        .cake-tier-huge {
+            background: linear-gradient(135deg, #ff477e, #b5179e);
+            border-radius: 100px / 30px;
+            position: relative;
+            box-shadow: 0 15px 30px rgba(0,0,0,0.5), inset 0 5px 15px rgba(255,255,255,0.2);
+            width: var(--w);
+            height: var(--h);
+            z-index: var(--z);
+            margin-top: -15px;
+            opacity: 0;
+            transform: scale(0.5) translateY(100px);
+            transition: all 0.9s cubic-bezier(0.175, 0.885, 0.32, 1.25);
+        }
+
+        .cake-tier-huge::after {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 25px;
+            background: rgba(255, 255, 255, 0.25);
+            top: 10px;
+            left: 0;
+            border-radius: 50%;
+        }
+
+        .cake-tier-huge.built {
+            opacity: 1;
+            transform: scale(1) translateY(0);
+        }
+
+        /* GLOWING NEON CANDLE PAIR */
+        .candle-17-group {
+            position: absolute;
+            top: 20px;
+            display: flex;
+            gap: 35px;
+            z-index: 50;
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s ease-out 1.2s;
+        }
+
+        .candle-17-group.assembled {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .elegant-candle-stick {
+            position: relative;
+            width: 14px;
+            height: 75px;
+            background: linear-gradient(to top, #7209b7, #b5179e, #ff85a2);
+            border-radius: 8px 8px 4px 4px;
+            box-shadow: 0 0 15px rgba(255, 71, 126, 0.4);
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+        }
+
+        .candle-label {
+            position: absolute;
+            bottom: 15px;
+            font-size: 26px;
+            font-weight: 900;
+            color: #ffffff;
+            font-family: 'Arial Black', sans-serif;
+            text-shadow: 0 0 10px #ff477e, 0 0 20px #b5179e;
+        }
+
+        .candle-flame-huge {
+            position: absolute;
+            width: 22px;
+            height: 36px;
+            background: radial-gradient(circle at bottom, #ffffff 10%, #ffcbd1 30%, #ffbe0b 60%, #ff0055 90%);
+            top: -32px;
+            border-radius: 50% 50% 20% 20%;
+            animation: flameWiggle 0.5s infinite alternate;
+            box-shadow: 0 0 20px #ffbe0b, 0 0 40px #ff0055, 0 0 60px #ff477e;
+            transition: opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .candle-flame-huge.extinguished {
+            opacity: 0 !important;
+            pointer-events: none;
+        }
+
+        /* SECRET TEXT LAYOUT CONTAINER */
+        .secret-message-box {
+            opacity: 0;
+            transform: scale(0.9) translateY(20px);
+            transition: all 1s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            background: rgba(255, 255, 255, 0.04);
+            border: 2px solid rgba(255, 71, 126, 0.3);
+            padding: 30px 24px;
+            border-radius: 28px;
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.6), 0 0 30px rgba(255, 71, 126, 0.15);
+            margin-top: 25px;
+            width: 100%;
+        }
+
+        .secret-message-box.revealed {
+            opacity: 1;
+            transform: scale(1) translateY(0);
+        }
+
+        /* GLASS POPUP PANEL */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(7, 3, 13, 0.97);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            z-index: 100;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 25px;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .modal-card {
+            width: 100%;
+            max-width: 360px;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 71, 126, 0.25);
+            border-radius: 20px;
+            padding: 30px 20px;
+            text-align: center;
+        }
+
+        .modal-card h3 {
+            font-size: 19px;
+            color: #ff477e;
+            margin-bottom: 14px;
+            font-weight: 700;
+        }
+
+        .modal-card p {
+            font-size: 15px;
+            line-height: 1.6;
+            color: #e5d4ff;
+        }
+
+        .close-modal-btn {
+            margin-top: 25px;
+            width: 100%;
+            padding: 13px;
+            background: linear-gradient(135deg, #ff477e, #b5179e);
+            border: none;
+            color: white;
+            font-weight: 600;
+            border-radius: 50px;
+            cursor: pointer;
+        }
+
+        .sky-sparkle {
+            position: fixed;
+            pointer-events: none;
+            z-index: 99;
+            animation: cascadeDown var(--d) linear forwards;
+        }
+
+        @keyframes cascadeDown {
+            0% { transform: translateY(-50px) scale(0.3) rotate(0deg); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateY(105vh) scale(var(--s)) rotate(360deg); opacity: 0; }
+        }
+
+        @keyframes flameWiggle {
+            0% { transform: rotate(-3deg) scale(0.95); }
+            100% { transform: rotate(4deg) scale(1.05); }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="sky-canvas"></div>
+
+    <audio id="bday-track" loop preload="auto">
+        <source src="best-part.mp3" type="audio/mpeg">
+    </audio>
+
+    <div class="app-page" id="page-1">
+        <div class="universe-scroll-wrapper">
+            
+            <div class="hero-section">
+                <div class="floating-crown">👑</div>
+                <h1 class="neon-title">Happy Birthday To You!</h1>
+                <div class="nickname-badge">Celebrating You Today ✨</div>
+                <p style="color: #dcbfff; max-width: 320px; font-size: 15px; line-height: 1.5;">A tiny custom-built neon sky timeline bridging the miles between us. Scroll down to unpack your gift... ✨</p>
+                <div class="scroll-down-indicator">Scroll Down 👇</div>
+            </div>
+
+            <div class="memory-timeline">
+                <h2 style="text-align: center; font-size: 20px; color: #dcbfff; margin-bottom: 8px;">Tap Your Birthday Frames ✨</h2>
+                
+                <div class="polaroid-card" style="--rotation: -3deg;" onclick="openMemoryBox(1)">
+                    <div class="photo-placeholder">🎤</div>
+                    <div class="card-caption">The Melody 🎶</div>
+                </div>
+
+                <div class="polaroid-card" style="--rotation: 4deg;" onclick="openMemoryBox(2)">
+                    <div class="photo-placeholder">🎨</div>
+                    <div class="card-caption">The Canvas 🖌️</div>
+                </div>
+
+                <div class="polaroid-card" style="--rotation: -2deg;" onclick="openMemoryBox(3)">
+                    <div class="photo-placeholder">🧠</div>
+                    <div class="card-caption">The Growth 🌱</div>
+                </div>
+            </div>
+
+            <div class="letter-vault">
+                <h2 style="color: #ff477e; margin-bottom: 15px; font-size: 22px;">Happy Birthday! 🎉</h2>
+                <p>Happy Birthday to an absolutely incredible and strong girl! You genuinely add so much style, creativity, and balance to my life.</p>
+                <p>Even though the distance means I can't be there to celebrate with you in person today, I wanted to build this little digital universe just for you to make sure your 17th is beautiful.</p>
+                <p>Thank you for simply being you, for dealing with our chaotic auto-translation bugs in our chats without losing your laugh, and for being such a stellar teammate and listener.</p>
+                <p style="color: #ff85a2; font-weight: bold; margin-bottom: 15px;">I hope you have the most beautiful birthday night ever. Enjoy every second of your special day! 🌸✨</p>
+                
+                <center>
+                    <button class="teleport-btn" onclick="teleportToCake()">
+                        Teleport to Next Page 🚀
+                    </button>
+                </center>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="app-page hidden" id="page-2">
+        <div class="cake-realm">
+            <h1 class="neon-title" style="font-size: 28px;">The Chapter of 17 💫</h1>
+            <p id="instruction-subtext" style="color: #dcbfff; font-size: 14px; max-width: 310px; margin-bottom: 10px; transition: color 0.5s;">Tap BOTH neon candles individually to blow out the flames and unlock your final surprise!</p>
+
+            <div class="huge-cake-container">
+                <div class="candle-17-group" id="candle-dock">
+                    <div class="elegant-candle-stick" onclick="extinguishSingleCandle(1, this)">
+                        <div class="candle-label">1</div>
+                        <div class="candle-flame-huge"></div>
+                    </div>
+                    <div class="elegant-candle-stick" onclick="extinguishSingleCandle(2, this)">
+                        <div class="candle-label">7</div>
+                        <div class="candle-flame-huge"></div>
+                    </div>
+                </div>
+                
+                <div class="cake-tier-huge" id="tier-1" style="--w: 190px; --h: 75px; --z: 3;"></div>
+                <div class="cake-tier-huge" id="tier-2" style="--w: 240px; --h: 90px; --z: 2;"></div>
+                <div class="cake-tier-huge" id="tier-3" style="--w: 290px; --h: 105px; --z: 1;"></div>
+            </div>
+
+            <div class="secret-message-box" id="secret-box">
+                <h3 style="color: #ff477e; font-size: 20px; margin-bottom: 12px;">Locked Wish Unlocked 💖</h3>
+                <p style="color: #f1e4ff; font-size: 15px; line-height: 1.6;">Distance means nothing when I have someone this special. May this 17th year bring you endless clarity, wonderful sketches, and gorgeous melodies. You are growing into such a remarkable person, and having you around makes everything better. Happy Birthday! 🎂✨</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="message-modal">
+        <div class="modal-card">
+            <h3 id="modal-title">Memory</h3>
+            <p id="modal-text">Details...</p>
+            <button class="close-modal-btn" onclick="closeMemoryBox()">Close Frame</button>
+        </div>
+    </div>
+
+    <script>
+        const details = [
+            "Your singing is genuinely fantastic. You have a massive talent for it, and listening to you sing completely changes the dynamic of the conversation. Never stop practicing!",
+            "Your drawing skills are brilliant. The creative eye you have when you sketch or design things is on another level. You are a real artist at heart!",
+            "Your maturity is easily one of the things I respect most about you. Talking to you and seeing how balanced you are has actually made me a more mature person, too. I'm incredibly grateful for our conversations."
+        ];
+
+        const headlines = [
+            "The Melody 🎶",
+            "The Canvas 🖌️",
+            "The Growth 🌱"
+        ];
+
+        let audioCtx = null;
+        function playChime(freq) {
+            try {
+                if(!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                if(audioCtx.state === 'suspended') audioCtx.resume();
+                let osc = audioCtx.createOscillator();
+                let gain = audioCtx.createGain();
+                osc.type = 'sine';
+                osc.frequency.value = freq;
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                gain.gain.setValueAtTime(0.06, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.5);
+                osc.start();
+                osc.stop(audioCtx.currentTime + 0.5);
+            } catch(e){}
+        }
+
+        function createGlobalSparkles() {
+            setInterval(() => {
+                let sp = document.createElement('div');
+                sp.classList.add('sky-sparkle');
+                sp.innerText = ['✨','🌸','🎈','💖','🎉','💝'][Math.floor(Math.random() * 6)];
+                sp.style.left = `${Math.random() * window.innerWidth}px`;
+                sp.style.top = `-20px`;
+                sp.style.setProperty('--d', `${Math.random() * 3 + 2}s`);
+                sp.style.setProperty('--s', Math.random() * 1.1 + 0.4);
+                document.body.appendChild(sp);
+                setTimeout(() => sp.remove(), 5000);
+            }, 100);
+        }
+
+        function openMemoryBox(index) {
+            document.getElementById('modal-title').innerText = headlines[index - 1];
+            document.getElementById('modal-text').innerText = details[index - 1];
+            document.getElementById('message-modal').classList.add('active');
+            playChime(440);
+        }
+
+        function closeMemoryBox() {
+            document.getElementById('message-modal').classList.remove('active');
+            playChime(349.23);
+        }
+
+        function teleportToCake() {
+            playChime(523.25);
+            document.getElementById('page-1').classList.add('hidden');
+            
+            setTimeout(() => {
+                window.scrollTo(0, 0);
+                document.getElementById('page-2').classList.remove('hidden');
+                
+                setTimeout(() => document.getElementById('tier-3').classList.add('built'), 200);
+                setTimeout(() => document.getElementById('tier-2').classList.add('built'), 550);
+                setTimeout(() => document.getElementById('tier-1').classList.add('built'), 900);
+                
+                setTimeout(() => {
+                    document.getElementById('candle-dock').classList.add('assembled');
+                    playChime(587.33);
+                }, 1300);
+
+            }, 800);
+        }
+
+        let candle1Blown = false;
+        let candle7Blown = false;
+
+        function extinguishSingleCandle(id, element) {
+            const flame = element.querySelector('.candle-flame-huge');
+            if(flame.classList.contains('extinguished')) return;
+
+            flame.classList.add('extinguished');
+            playChime(493.88);
+
+            if(id === 1) candle1Blown = true;
+            if(id === 2) candle7Blown = true;
+
+            if(candle1Blown && candle7Blown) {
+                setTimeout(() => {
+                    playChime(659.25);
+                    
+                    document.getElementById('secret-box').classList.add('revealed');
+                    document.getElementById('instruction-subtext').innerText = "Wish Sent Safely! Enjoy your song... 🎵✨";
+                    document.getElementById('instruction-subtext').style.color = "#ff477e";
+
+                    const song = document.getElementById('bday-track');
+                    song.currentTime = 0;
+                    
+                    let playPromise = song.play();
+                    if (playPromise !== undefined) {
+                        playPromise.catch(err => {
+                            console.log("Android audio background autoplay catch rule met.", err);
+                        });
+                    }
+
+                    createGlobalSparkles();
+                }, 400);
+            }
+        }
+    </script>
+</body>
+</html>
